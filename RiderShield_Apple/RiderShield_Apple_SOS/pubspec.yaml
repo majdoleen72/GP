@@ -1,0 +1,21 @@
+name: ridershield_ui
+description: RiderShield complete UI prototype with local data and Apple-inspired design.
+publish_to: none
+version: 2.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.3.2
+  image_picker: ^1.1.2
+  geolocator: ^14.0.2
+  http: ^1.5.0
+  url_launcher: ^6.3.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
