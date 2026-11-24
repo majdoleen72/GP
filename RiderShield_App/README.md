@@ -1,83 +1,218 @@
-# RiderShield — Apple-inspired forms & emergency workflow
+# RiderShield – Mobile Application
 
-This is the updated **RiderShield Flutter/Dart source**, based on the previous Refined UI project. The existing welcome, profile, reports, helmet connection, 5-tab floating navigation, assets, and local storage are preserved.
+## Overview
 
-## New features
+RiderShield is a Flutter-based mobile application developed as part of a graduation project at King Saud University. The application is designed to enhance motorcycle rider safety through an intuitive dashboard, safety reports, emergency assistance workflows, and smart helmet connectivity interfaces.
 
-- **Apple-inspired inset-grouped fields:** Sign in, sign up, edit profile, and add/edit emergency contacts now use compact single-group rows with always-visible labels, 48pt-ish hit targets, readable text, and clear separators. Space is preserved instead of allocating a large card to each field. They are iOS-inspired, not Apple proprietary widgets.
-- **Crash Alert:** `CrashAlertScreen(crashDetected: true)` presents a ten-second countdown and prominent **I'm OK — Cancel alert** button. Cancelling neither dispatches SOS nor creates an incident. On timeout it records a crash incident in Safety Report and attempts to dispatch through a configured HTTPS backend.
-- **Crash test:** `CrashAlertScreen(crashDetected: true, testOnly: true)` can be opened from Home or Emergency. The demo has a visible TEST MODE label and never sends emergency data, even if a backend URL is configured. Timeout creates a TEST crash record; cancel does not.
-- **Manual SOS:** On Emergency tab, select **Manual SOS** -> **Send manual SOS**. It doesn't create a crash report.
-- **Optional GPS lookup:** If a real dispatch is configured, checks location service and permission, then attempts to attach a Google Maps coordinates link. If unavailable, the dispatch still continues with an explicit unavailable value.
-- **Delivery status:** Only a backend response containing `{"accepted": true}` counts as request accepted. **Accepted is not delivered**. No data transmission is ever claimed in demo mode or without an acknowledged backend.
-- **Manual fallback:** When real dispatch isn't configured or fails, the user can open the SMS composer for each saved contact, then must press Send in Messages. Opening the composer is never claimed to be an SMS sent.
+## Application Features
 
-## Android Studio setup
+### User Account
 
-1. Unzip this archive and open the inner `RiderShield_Apple_SOS` folder (containing `pubspec.yaml`) in Android Studio.
-2. In Android Studio Terminal (PowerShell), run:
+- Welcome, Sign In, and Sign Up interfaces.
+- Input validation.
+- Password requirements and strength indicator.
+- Google Sign-In interface.
+- Local user profile management.
+- Sign-out functionality.
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\SETUP_ANDROID.ps1
+### Home Dashboard
+
+- Interactive and rotating 3D helmet model.
+- Helmet connection status.
+- Safety statistics and warning summaries.
+- Rider safety status preview.
+- Customizable emergency countdown from 5 to 60 seconds.
+
+### Connect Helmet
+
+- Smart helmet connection interface.
+- Animated connection progress.
+- Connection and disconnection controls.
+- Step-by-step connection instructions.
+- Interactive 3D helmet visualization.
+
+### Emergency Assistance
+
+- Add, edit, and delete emergency contacts.
+- Manage contact names, phone numbers, and relationships.
+- Manual SOS workflow.
+- Crash Alert interface.
+- Customizable emergency countdown from 5 to 60 seconds, with a default duration of 10 seconds.
+- Visual circular countdown indicator.
+- Immediate manual SOS action without waiting for the countdown.
+- Emergency alert cancellation through the "I'm OK" button.
+- Automatic return to the Home Dashboard after alert cancellation.
+- Automatic return to the Home Dashboard after successful acceptance of an emergency request.
+- Local crash incident recording when the crash countdown expires.
+- Emergency response status handling.
+- Manual SMS fallback when automatic dispatch is unavailable.
+
+Cancelled crash alerts do not create incident records. Manual SOS requests are handled separately and do not create crash reports.
+
+### Safety Reports
+
+- Warning history.
+- Crash history.
+- Speed warning records.
+- Drowsiness warning records.
+- Vehicle proximity warning records.
+- Date-based report filtering.
+- Detailed warning and crash information.
+- Individual record deletion.
+
+### Profile and Settings
+
+- Edit personal information.
+- Update profile and cover images.
+- Manage riding experience.
+- Change Password interface.
+- Privacy and Protection settings.
+- Switch between Light and Dark Mode.
+- Local account preferences.
+- Sign-out functionality.
+
+## Application Design
+
+The application provides a consistent and modern user experience through:
+
+- Light Mode and Dark Mode.
+- Glass-inspired interface components.
+- Custom floating bottom navigation bar.
+- Animated screen transitions.
+- Interactive 3D helmet models.
+- Animated connection indicators.
+- Reusable interface components.
+- Theme-aware emergency screens.
+
+## Application Navigation
+
+The main bottom navigation bar contains three sections:
+
+- Home
+- Emergency
+- Connect Helmet
+
+Safety Reports and Profile are accessible through the application header.
+
+Additional screens, including Edit Profile, Change Password, Emergency Contact Management, and Crash Alert, are accessible through their corresponding sections.
+
+## Technologies
+
+| Technology | Purpose |
+|---|---|
+| Flutter | Mobile application development |
+| Dart | Application programming |
+| Shared Preferences | Local data storage |
+| Image Picker | Profile and cover image selection |
+| GLBView | Interactive 3D model visualization |
+| URL Launcher | Opening external applications |
+| Android SDK | Android application support |
+
+## Project Structure
+
+- `lib/main.dart` — Application entry point.
+- `lib/app/` — Application state and configuration.
+- `lib/screens/` — Application screens and user interfaces.
+- `lib/widgets/` — Reusable interface components.
+- `lib/theme/` — Application colors and themes.
+- `lib/navigation/` — Navigation and screen transitions.
+- `lib/services/` — Application service components.
+- `lib/utils/` — Utility and validation functions.
+- `assets/images/` — Images and 3D helmet models.
+- `android/` — Android platform configuration.
+- `pubspec.yaml` — Project dependencies and asset configuration.
+
+## Getting Started
+
+### Prerequisites
+
+- Flutter SDK
+- Dart SDK
+- Android SDK
+- Android Studio or Visual Studio Code
+- Android emulator or physical Android device
+
+### Installation
+
+Open the `RiderShield_App` directory in your development environment.
+
+Install the required dependencies:
+
+```bash
+flutter pub get
 ```
 
-The setup script uses the SDK at `C:\Users\majdo\Downloads\flutter\flutter\bin\flutter.bat` when available. Otherwise Flutter must be on PATH. It creates any missing Android platform files, adds INTERNET/FINE/COARSE location permissions to the Android manifest without deleting other entries, and runs pub get. It does **not** rewrite the Dart source or assets.
+Check the Flutter development environment:
 
-3. Open your existing Pixel 5 emulator.
-4. Run:
-
-```powershell
-& "C:\Users\majdo\Downloads\flutter\flutter\bin\flutter.bat" run -d emulator-5554
+```bash
+flutter doctor
 ```
 
-You can also run from Android Studio's Run button after platform setup.
+Check available devices:
 
-## Existing project — patch instead of replacement
-
-Copy `lib` and `pubspec.yaml` from this archive to your existing project, replacing matching files. Retain your existing `android` directory and `assets`. Add the following **direct children of** `<manifest>` in `android/app/src/main/AndroidManifest.xml` if missing (or run the supplied setup script from the existing project root):
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+```bash
+flutter devices
 ```
 
-Then run `flutter pub get` and do a **full restart** (not Hot Reload), because plugin registrations and class structures changed.
+Run the application:
 
-## Emergency delivery API (NOT configured by default)
-
-This UI **does not send automatic SMS out of the box**. The mobile client cannot safely contain SMS provider credentials. To test actual dispatch against **your own authenticated and secured backend**, build a backend accepting HTTPS POST as documented below, then run with:
-
-```powershell
-& "C:\Users\majdo\Downloads\flutter\flutter\bin\flutter.bat" run -d emulator-5554 --dart-define=RIDERSHIELD_EMERGENCY_API_URL=https://your-secure-server.example/api/emergencies
+```bash
+flutter run
 ```
 
-The API receives an `eventId`, `trigger` (`crash_timeout` or `manual_sos`), `person` (`name`, `phone`), `occurredAt` (UTC ISO timestamp), `location` (maps URL or unavailable string) and `recipients` array of name/phone/relationship. Only respond `{"accepted": true}` after authenticating the user, validating input, applying abuse/rate controls, and DURABLY queuing notifications to your SMS provider. An accepted request is **not a delivery receipt**. Implement per-recipient status reporting and retries before actual field use. Use HTTPS, securely manage consent, and never include provider API secrets in the app. At present demo authentication is not real, so this prototype is **not suitable for production SOS delivery** even with the URL set. The URL example is illustrative and not a deployed endpoint.
+## Local Data Management
 
-## Crash detection integration
+The application uses Shared Preferences to store and retrieve:
 
-The app currently has **no sensor-based crash detector**. The existing TEST button is not detection. Your phone crash-detection logic can navigate to:
+- User profile information.
+- Profile and cover images.
+- Emergency contacts.
+- Warning records.
+- Crash incident records.
+- Emergency countdown preferences.
+- Account-specific data.
 
-```dart
-Navigator.of(context).push(MaterialPageRoute<void>(
-  builder: (_) => const CrashAlertScreen(crashDetected: true, testOnly: false),
-));
-```
+User information and preferences are maintained locally. Account-specific records are organized according to the user's email address.
 
-Important: The ten-second timer runs inside the Flutter UI while the screen is active. Flutter UI timers may be suspended in background, the app might be terminated or permissions blocked, and mobile connectivity can fail. For reliability, a production emergency workflow requires **platform-native foreground/background scheduling, pre-granted permissions, persistent retry queues and server-side delivery verification**, plus comprehensive testing. The user needs an easy way to cancel false positives. This app is currently for demonstration and evaluation, **not a substitute for emergency services**.
+## Security and Privacy
 
-## iPhone support later
+The current application uses local storage for user information and application records.
 
-To create iOS platform files on a Mac: `flutter create --platforms=ios .` and add `NSLocationWhenInUseUsageDescription` to `ios/Runner/Info.plist`, explaining emergency location sharing. The repo here targets Android Studio on Windows. Do not request Always location access unnecessarily.
+Sensitive credentials, external service keys, and private configuration files must not be included in the source code or repository.
 
-## Safety Report rule
+Local storage and authentication mechanisms require further security enhancements before production deployment.
 
-Only crash incidents with completed countdowns and manual **TEST crash** records appear in Safety Report. Normal Safe/Careful/Unsafe warnings do not generate reports, and pressing Manual SOS by itself does not create a crash entry. Records are currently stored in local `shared_preferences` (not encrypted or backed up by a server); use encrypted/secure storage and a real black-box sync design for production.
+## Development Status
 
-## Testing checklist
+The current version focuses on mobile application interfaces, navigation, local data management, theme customization, and emergency assistance workflows.
 
-- Check Sign Up on Pixel 5 with keyboard closed: compact input group, password strength indicator, Create Account and sign-in/social actions accessible.
-- Tap Home -> Test crash countdown; press I'm OK within 10s: returns with **no new report**.
-- Let TEST countdown reach zero: displays **TEST ONLY**, logs one test crash in Safety Report, no SMS sent.
-- Add/edit/delete emergency contacts, then open Manual SOS. With no configured backend, it must say **nothing was sent**; SMS composer fallback is only available for real (non-demo) actions and requires manually pressing Send.
-- Verify the floating 5-tab navbar and pinned header remain consistent with existing design.
+The application includes sample safety records and simulated helmet connection states for interface evaluation.
+
+The following components require further development and system integration:
+
+- Backend authentication.
+- Smart helmet connectivity.
+- Real-time safety monitoring.
+- Automatic crash detection.
+- Automatic emergency message delivery.
+- Secure data storage.
+
+Automatic emergency message delivery requires a configured and secured backend service. Acceptance of an emergency request does not indicate confirmed message delivery.
+
+The current application is an academic prototype and is not intended to replace emergency services.
+
+## Academic Information
+
+**Project Name:** RiderShield
+
+**University:** King Saud University
+
+**College:** College of Computer and Information Sciences
+
+**Department:** Information Technology
+
+**Project Type:** Graduation Project
+
+---
+
+**RiderShield — Smart Safety for Motorcycle Riders.**
